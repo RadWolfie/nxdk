@@ -80,6 +80,10 @@ include $(NXDK_DIR)/lib/net/Makefile
 ifneq ($(NXDK_SDL),)
 include $(NXDK_DIR)/lib/sdl/SDL2/Makefile.xbox
 include $(NXDK_DIR)/lib/sdl/Makefile
+# Only allow SDL_mixer if SDL is also enabled
+ifneq ($(NXDK_SDL_MIXER),)
+include $(NXDK_DIR)/lib/sdl/SDL2_mixer/Makefile
+endif
 endif
 
 V = 0

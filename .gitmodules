@@ -48,3 +48,6 @@
 [submodule "samples/pbgl"]
 	path = samples/pbgl
 	url = https://github.com/fgsfdsfgs/pbgl-samples.git
+[submodule "lib/sdl/SDL2_mixer/SDL_mixer"]
+	path = lib/sdl/SDL2_mixer/SDL_mixer
+	url = https://github.com/SDL-mirror/SDL_mixer.git
