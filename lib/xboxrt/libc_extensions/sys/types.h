@@ -1,0 +1,6 @@
+#ifndef XBOXRT_SYS_TYPES
+#define XBOXRT_SYS_TYPES
+
+/* DUMMY */
+
+#endif // XBOXRT_SYS_TYPES
