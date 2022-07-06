@@ -6,7 +6,7 @@ LIBSDLMIXER_SRCS = \
   $(LIBSDLMIXER_DIR)/src/effect_stereoreverse.c \
   $(LIBSDLMIXER_DIR)/src/mixer.c \
   $(LIBSDLMIXER_DIR)/src/music.c \
-  $(LIBSDLMIXER_DIR)/src/compat.c \
+  $(LIBSDLMIXER_DIR)/src/utils.c \
   $(LIBSDLMIXER_DIR)/src/codecs/load_aiff.c \
   $(LIBSDLMIXER_DIR)/src/codecs/load_voc.c \
   $(LIBSDLMIXER_DIR)/src/codecs/music_cmd.c \
@@ -21,6 +21,7 @@ LIBSDLMIXER_SRCS = \
   $(LIBSDLMIXER_DIR)/src/codecs/music_opus.c \
   $(LIBSDLMIXER_DIR)/src/codecs/music_timidity.c \
   $(LIBSDLMIXER_DIR)/src/codecs/music_wav.c \
+  $(LIBSDLMIXER_DIR)/src/codecs/music_xmp.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/common.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/instrum.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/mix.c \
