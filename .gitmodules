@@ -42,3 +42,9 @@
 [submodule "lib/usb/libusbohci"]
 	path = lib/usb/libusbohci
 	url = https://github.com/XboxDev/libusbohci.git
+[submodule "lib/pbgl"]
+	path = lib/pbgl
+	url = https://github.com/fgsfdsfgs/pbgl.git
+[submodule "samples/pbgl"]
+	path = samples/pbgl
+	url = https://github.com/fgsfdsfgs/pbgl-samples.git
