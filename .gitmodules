@@ -14,7 +14,7 @@
 	url = https://github.com/lwip-tcpip/lwip.git
 [submodule "lib/sdl/SDL2"]
 	path = lib/sdl/SDL2
-	url = https://github.com/XboxDev/nxdk-sdl.git
+	url = https://github.com/fgsfdsfgs/nxdk-sdl.git
 	branch = nxdk
 [submodule "lib/pdclib"]
 	path = lib/pdclib
