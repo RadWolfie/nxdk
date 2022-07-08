@@ -10,18 +10,12 @@ LIBSDLMIXER_SRCS = \
   $(LIBSDLMIXER_DIR)/src/codecs/load_aiff.c \
   $(LIBSDLMIXER_DIR)/src/codecs/load_voc.c \
   $(LIBSDLMIXER_DIR)/src/codecs/music_cmd.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_flac.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_fluidsynth.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_mad.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_mikmod.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_modplug.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_mpg123.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_nativemidi.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_ogg.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_opus.c \
+  $(LIBSDLMIXER_DIR)/src/codecs/music_drflac.c \
+  $(LIBSDLMIXER_DIR)/src/codecs/music_drmp3.c \
+  $(LIBSDLMIXER_DIR)/src/codecs/music_ogg_stb.c \
   $(LIBSDLMIXER_DIR)/src/codecs/music_timidity.c \
   $(LIBSDLMIXER_DIR)/src/codecs/music_wav.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/music_xmp.c \
+  $(LIBSDLMIXER_DIR)/src/codecs/mp3utils.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/common.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/instrum.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/mix.c \
@@ -30,22 +24,7 @@ LIBSDLMIXER_SRCS = \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/readmidi.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/resample.c \
   $(LIBSDLMIXER_DIR)/src/codecs/timidity/tables.c \
-  $(LIBSDLMIXER_DIR)/src/codecs/timidity/timidity.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/block.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/codebook.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/floor0.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/floor1.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/info.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/mapping0.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/mdct.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/registry.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/res012.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/sharedbook.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/synthesis.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/window.c \
-  $(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/vorbisfile.c \
-  $(LIBSDLMIXER_DIR)/external/libogg-1.3.2/src/bitwise.c \
-  $(LIBSDLMIXER_DIR)/external/libogg-1.3.2/src/framing.c
+  $(LIBSDLMIXER_DIR)/src/codecs/timidity/timidity.c
 
 # public cflags
 NXDK_CFLAGS += -I$(LIBSDLMIXER_DIR)/include
@@ -53,16 +32,11 @@ NXDK_CXXFLAGS += -I$(LIBSDLMIXER_DIR)/include
 
 # private cflags
 LIBSDLMIXER_CFLAGS := \
-  -Wno-pragma-pack -DXBOX \
+  -Wno-pragma-pack -Wno-static-in-inline -DXBOX \
   -DMUSIC_WAV -DMUSIC_OGG -DMUSIC_MID_TIMIDITY \
-  -DOGG_USE_TREMOR -DOGG_HEADER="<ivorbisfile.h>" \
+  -DMUSIC_FLAC_DRFLAC -DMUSIC_MP3_DRMP3 \
+  -DOGG_USE_STB -DDR_MP3_NO_SIMD -DDR_FLAC_NO_SIMD \
   -DHAVE_ALLOCA -DFLOAT_LOOKUP -DINT_LOOKUP \
-  -I$(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1 \
-  -I$(LIBSDLMIXER_DIR)/external/libvorbis-1.3.6/include \
-  -I$(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/include \
-  -I$(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/lib \
-  -I$(LIBSDLMIXER_DIR)/external/libvorbisidec-1.2.1/../libogg-1.3.2/include \
-  -I$(LIBSDLMIXER_DIR)/external/libogg-1.3.2/include \
   -I$(LIBSDLMIXER_DIR)/src/codecs \
   -I$(LIBSDLMIXER_DIR)/src
 
