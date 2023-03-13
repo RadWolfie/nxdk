@@ -2,24 +2,20 @@ name: Build Docker image
 
 on:
   push:
-    branches: master
+    branches: cmake-fixes-experimental
+
+env:
+    REGISTRY: ghcr.io
 
 jobs:
   main:
     name: Docker
-    if: github.repository_owner == 'XboxDev'
+    if: github.repository_owner == 'RadWolfie'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       matrix:
-        image-name: [nxdk, nxdk-debug, nxdk-lto]
-        include:
-          - image-name: nxdk
-            build-args: buildparams=CFLAGS=-O2 CXXFLAGS=-O2
-          - image-name: nxdk-debug
-            build-args: buildparams=DEBUG=y
-          - image-name: nxdk-lto
-            build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
+        image-name: [nxdk]
     steps:
       - name: Clone Tree
         uses: actions/checkout@v3
@@ -31,23 +27,16 @@ jobs:
       - name: Generate tags
         id: tags
         run: |
-          DOCKER_IMAGE=xboxdev/${{ matrix.image-name }}
-          TAGS="${DOCKER_IMAGE}:latest"
-          TAGS="$TAGS,${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
-          TAGS="$TAGS,ghcr.io/${DOCKER_IMAGE}:latest"
-          TAGS="$TAGS,ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
+          DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
+          TAGS="${{ env.REGISTRY }}/${DOCKER_IMAGE}:latest"
+          TAGS="$TAGS,${{ env.REGISTRY }}/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
           echo "tags=${TAGS}"  >> $GITHUB_OUTPUT
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
