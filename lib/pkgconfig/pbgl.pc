@@ -1,0 +1,7 @@
+Name: pbgl
+Description: pbgl library
+Version: 0.0.0
+
+Requires:
+Libs: ${NXDK_DIR}/lib/libpbgl.lib
+Cflags: -I${NXDK_DIR}/lib/pbgl/include
