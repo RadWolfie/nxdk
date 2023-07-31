@@ -7,19 +7,20 @@ on:
 jobs:
   main:
     name: Docker
-    if: github.repository_owner == 'XboxDev'
+    #if: github.repository_owner == 'XboxDev'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       matrix:
-        image-name: [nxdk, nxdk-debug, nxdk-lto]
+        #image-name: [nxdk, nxdk-debug, nxdk-lto]
+        image-name: [nxdk-debug]
         include:
-          - image-name: nxdk
-            build-args: buildparams=CFLAGS=-O2 CXXFLAGS=-O2
+          #- image-name: nxdk
+          #  build-args: buildparams=CFLAGS=-O2 CXXFLAGS=-O2
           - image-name: nxdk-debug
             build-args: buildparams=DEBUG=y
-          - image-name: nxdk-lto
-            build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
+          #- image-name: nxdk-lto
+          #  build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
     steps:
       - name: Clone Tree
         uses: actions/checkout@v3
@@ -58,6 +59,7 @@ jobs:
           build-args: ${{ matrix.build-args }}
           platforms: linux/amd64,linux/386
           push: true
+          target: ${{ matrix.image-name }}
           tags: ${{ steps.tags.outputs.tags }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
