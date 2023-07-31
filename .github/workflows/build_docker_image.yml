@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build docker image
         run: |
-          docker build --build-arg buildparams="${{ matrix.build-args }}" -t git-${GITHUB_SHA::8} . \
+          docker build --build-arg buildparams="${{ matrix.build-args }}" -t ${{ matrix.image-name }} . \
             --label "org.opencontainers.image.revision=${{ github.sha }}" \
             --label "org.opencontainers.image.created=$(date --rfc-3339=seconds --utc)"
       #  uses: docker/build-push-action@v3
@@ -70,7 +70,7 @@ jobs:
       - name: Push
         run: |
           DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
-          docker tag ghcr.io/radwolfie/nxdk:git-${GITHUB_SHA::8} ${DOCKER_IMAGE}:latest
-          docker tag ghcr.io/radwolfie/nxdk:git-${GITHUB_SHA::8} ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
+          docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:latest
+          docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
           docker push ${DOCKER_IMAGE}:latest
           docker push ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
