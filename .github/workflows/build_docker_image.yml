@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build docker image
         run: |
-          docker build --build-arg buildparams="${{ matrix.build-args }}" -t ${{ matrix.tag }} . \
+          docker build --build-arg buildparams="${{ matrix.build-args }}" . \
             --label "org.opencontainers.image.revision=${{ github.sha }}" \
             --label "org.opencontainers.image.created=$(date --rfc-3339=seconds --utc)"
       #  uses: docker/build-push-action@v3
