@@ -45,6 +45,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ./Dockerfile
           platforms: linux/amd64,linux/386
           build-args: ${{ matrix.build-args }}
           load: true
