@@ -56,7 +56,7 @@ jobs:
           for dir in */
           do
             cd "$dir"
-            docker run --rm -v `pwd`:/usr/src/app make -j`nproc`
+            docker run --rm -v `pwd`:/usr/src/app ${{ env.DOCKER_IMAGE }} make -j`nproc`
             cd ..
           done
       - name: Login to DockerHub
