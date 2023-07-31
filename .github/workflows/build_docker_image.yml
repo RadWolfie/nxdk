@@ -31,10 +31,10 @@ jobs:
       - name: Generate tags
         id: tags
         run: |
-          DOCKER_IMAGE=xboxdev/${{ matrix.image-name }}
-          TAGS="${DOCKER_IMAGE}:latest"
-          TAGS="$TAGS,${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
-          TAGS="$TAGS,ghcr.io/${DOCKER_IMAGE}:latest"
+          DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
+          #TAGS="${DOCKER_IMAGE}:latest"
+          #TAGS="$TAGS,${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
+          TAGS="ghcr.io/${DOCKER_IMAGE}:latest"
           TAGS="$TAGS,ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
           echo ::set-output name=tags::${TAGS}
       - name: Set up Docker Buildx
