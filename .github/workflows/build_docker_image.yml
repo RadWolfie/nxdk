@@ -50,19 +50,23 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: ${{ matrix.build-args }}
-          platforms: linux/amd64,linux/386
-          push: false #true
+      - name: Build docker image
+        run: |
+          docker build --build-arg buildparams="${{ matrix.build-args }}" -t ${{ matrix.tag }} . \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            --label "org.opencontainers.image.created=$(date --rfc-3339=seconds --utc)"
+      #  uses: docker/build-push-action@v3
+      #  with:
+      #    context: .
+      #    file: ./Dockerfile
+      #    build-args: ${{ matrix.build-args }}
+      #    platforms: linux/amd64,linux/386
+      #    push: false #true
       #    target: ${{ matrix.image-name }}
-          tags: ${{ steps.tags.outputs.tags }}
-          labels: |
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
+      #    tags: ${{ steps.tags.outputs.tags }}
+      #    labels: |
+      #      org.opencontainers.image.revision=${{ github.sha }}
+      #      org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
       - name: Push
         run: |
           DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
