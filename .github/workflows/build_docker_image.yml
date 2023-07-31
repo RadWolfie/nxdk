@@ -62,7 +62,7 @@ jobs:
           build-args: ${{ matrix.build-args }}
           platforms: linux/amd64,linux/386
           push: true #true
-          target: ${{ matrix.image-name }}
+          #target: ${{ matrix.image-name }}
           tags: ${{ steps.tags.outputs.tags }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
