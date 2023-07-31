@@ -51,26 +51,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build docker image
-      #  run: |
-      #    docker build --build-arg buildparams="${{ matrix.build-args }}" -t ${{ matrix.image-name }} . \
-      #      --label "org.opencontainers.image.revision=${{ github.sha }}" \
-      #      --label "org.opencontainers.image.created=$(date --rfc-3339=seconds --utc)"
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: ${{ matrix.build-args }}
-          platforms: linux/amd64,linux/386
-          push: true #true
-          #target: ${{ matrix.image-name }}
-          tags: ${{ steps.tags.outputs.tags }}
-          labels: |
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
-      #- name: Push
-      #  run: |
-      #    DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
-      #    docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:latest
-      #    docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
-      #    docker push ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
-      #    docker push ghcr.io/${DOCKER_IMAGE}:latest
+        run: |
+          docker build --build-arg buildparams="${{ matrix.build-args }}" -t ${{ matrix.image-name }} . \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            --label "org.opencontainers.image.created=$(date --rfc-3339=seconds --utc)"
+      #  uses: docker/build-push-action@v3
+      #  with:
+      #    context: .
+      #    file: ./Dockerfile
+      #    build-args: ${{ matrix.build-args }}
+      #    platforms: linux/amd64,linux/386
+      #    push: true #true
+      #    #target: ${{ matrix.image-name }}
+      #    tags: ${{ steps.tags.outputs.tags }}
+      #    labels: |
+      #      org.opencontainers.image.revision=${{ github.sha }}
+      #      org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
+      - name: Push
+        run: |
+          DOCKER_IMAGE=${{ github.repository_owner }}/${{ matrix.image-name }}
+          docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:latest
+          docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
+          docker push ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
+          docker push ghcr.io/${DOCKER_IMAGE}:latest
