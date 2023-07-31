@@ -35,6 +35,9 @@ jobs:
             DOCKER_TAGS="${DOCKER_TAGS},${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
           fi
           echo "DOCKER_TAGS=${{ matrix.image-name }}|tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      # required for platforms support
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       #- name: Generate timestamp
       #  id: timestamp
       #  run: echo "timestamp=$(date --rfc-3339=seconds --utc)"
@@ -77,7 +80,6 @@ jobs:
           build-args: ${{ matrix.build-args }}
           platforms: linux/amd64,linux/386
           push: false #true
-          #target: ${{ matrix.image-name }}
           tags: ${{ steps.tags.outputs.tags }}
       #    labels: |
       #      org.opencontainers.image.revision=${{ github.sha }}
