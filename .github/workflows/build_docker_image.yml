@@ -30,7 +30,8 @@ jobs:
           echo "timestamp=$(date --rfc-3339=seconds --utc)" >> $GITHUB_ENV
           DOCKER_USER_IMAGE=$(echo ${{ github.repository_owner }}/${{ matrix.image-name }}|tr '[:upper:]' '[:lower:]')
           echo "DOCKER_USER_IMAGE=${DOCKER_USER_IMAGE}" >> $GITHUB_ENV
-          echo "DOCKER_TAG=ghcr.io/${DOCKER_USER_IMAGE}:latest" >> $GITHUB_ENV
+          DOCKER_TAG=ghcr.io/${DOCKER_USER_IMAGE}:latest
+          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "DOCKER_TAGS=${{ matrix.image-name }},${DOCKER_TAG},ghcr.io/${DOCKER_USER_IMAGE}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
       - name: Setup DockerHub tags
         if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
@@ -54,7 +55,9 @@ jobs:
           for dir in */
           do
             cd "$dir"
-            docker run --rm -v `pwd`:/usr/src/app -t ${{ steps.build.outputs.imageid }} make -j`nproc`
+            # using imageid works.
+            #docker run --rm -v `pwd`:/usr/src/app -t ${{ steps.build.outputs.imageid }} make -j`nproc`
+            docker run --rm -v `pwd`:/usr/src/app -t ${{ matrix.image-name }} make -j`nproc`
             cd ..
           done
       - name: Login to DockerHub
