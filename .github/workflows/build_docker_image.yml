@@ -53,10 +53,10 @@ jobs:
       - name: Build and push
         run: |
           DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
-          docker tag ghcr.io/radwolfie/nxdk ${TARGET}:latest
-          docker tag ghcr.io/radwolfie/nxdk ${TARGET}:git-${GITHUB_SHA::8}
-          docker push ${TARGET}:latest
-          docker push ${TARGET}:git-${GITHUB_SHA::8}
+          docker tag ghcr.io/radwolfie/nxdk ${DOCKER_IMAGE}:latest
+          docker tag ghcr.io/radwolfie/nxdk ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
+          docker push ${DOCKER_IMAGE}:latest
+          docker push ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
       #  uses: docker/build-push-action@v3
       #  with:
       #    context: .
