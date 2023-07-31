@@ -37,20 +37,21 @@ jobs:
         uses: docker/setup-buildx-action@v2
       # Do the build only.
       - name: Build docker image
+        id: build
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
           build-args: ${{ matrix.build-args }}
           load: true
-          tags: ${{ matrix.image-name }}
+          tags: ${{ env.DOCKER_TAGS }}
       - name: Test Docker image
         run: |
           cd samples
           for dir in */
           do
             cd "$dir"
-            docker run --rm -v `pwd`:/usr/src/app -t ${{ matrix.image-name }} make -j`nproc`
+            docker run --rm -v `pwd`:/usr/src/app -t ${{ steps.build.outputs.imageid }} make -j`nproc`
             cd ..
           done
       - name: Setup DockerHub tags
