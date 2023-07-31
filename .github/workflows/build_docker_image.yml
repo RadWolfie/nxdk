@@ -33,6 +33,8 @@ jobs:
           #DOCKER_TAGS="ghcr.io/${DOCKER_IMAGE}:latest,ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
           # Test append (works)
           DOCKER_TAGS="ghcr.io/${DOCKER_IMAGE}:latest"
+          # preserve original tag needed to work with build samples test
+          echo "DOCKER_TAG=${DOCKER_TAGS}" >> $GITHUB_ENV
           DOCKER_TAGS="$DOCKER_TAGS,ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
           # Maybe move below into separate step to recognize it is skip.
           if [ "${{ github.repository_owner }}" == "XboxDev"  && "${{ github.ref }}" == "refs/heads/master" ]; then
@@ -51,6 +53,15 @@ jobs:
           build-args: ${{ matrix.build-args }}
           load: true
           tags: ${{ env.DOCKER_TAGS }}
+      - name: Test Docker image
+        run: |
+          cd samples
+          for dir in */
+          do
+            cd "$dir"
+            docker run --rm -v `pwd`:/usr/src/app -t ${{ env.DOCKER_TAG }} make -j`nproc`
+            cd ..
+          done
       - name: Login to DockerHub
         if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         uses: docker/login-action@v2
@@ -63,16 +74,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # Test docker image require to be after logins.
-      - name: Test Docker image
-        run: |
-          cd samples
-          for dir in */
-          do
-            cd "$dir"
-            docker run --rm -v `pwd`:/usr/src/app -t ${{ env.DOCKER_IMAGE }} make -j`nproc`
-            cd ..
-          done
       - name: Push docker image
         if: github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v4
