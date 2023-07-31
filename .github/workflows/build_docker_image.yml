@@ -50,15 +50,6 @@ jobs:
           build-args: ${{ matrix.build-args }}
           load: true
           tags: ${{ env.DOCKER_TAGS }}
-      - name: Test Docker image
-        run: |
-          cd samples
-          for dir in */
-          do
-            cd "$dir"
-            docker run --rm -v `pwd`:/usr/src/app ${{ env.DOCKER_IMAGE }} make -j`nproc`
-            cd ..
-          done
       - name: Login to DockerHub
         if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         uses: docker/login-action@v2
@@ -72,6 +63,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # Test docker image require to be after logins.
+      - name: Test Docker image
+        run: |
+          cd samples
+          for dir in */
+          do
+            cd "$dir"
+            docker run --rm -v `pwd`:/usr/src/app -t ${{ env.DOCKER_IMAGE }} make -j`nproc`
+            cd ..
+          done
       - name: Push docker image
         if: github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v4
