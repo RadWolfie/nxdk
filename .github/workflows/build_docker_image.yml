@@ -72,5 +72,5 @@ jobs:
           DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
           docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:latest
           docker tag ${{ matrix.image-name }} ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
-          docker push ${DOCKER_IMAGE}:latest
-          docker push ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
+          docker push ghcr.io/${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
+          docker push ghcr.io/${DOCKER_IMAGE}:latest
