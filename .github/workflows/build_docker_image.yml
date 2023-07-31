@@ -50,22 +50,23 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: ${{ matrix.build-args }}
+          platforms: linux/amd64,linux/386
+          push: false #true
+      #    target: ${{ matrix.image-name }}
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
+      - name: Push
         run: |
           DOCKER_IMAGE=radwolfie/${{ matrix.image-name }}
           docker tag ghcr.io/radwolfie/nxdk ${DOCKER_IMAGE}:latest
           docker tag ghcr.io/radwolfie/nxdk ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
           docker push ${DOCKER_IMAGE}:latest
           docker push ${DOCKER_IMAGE}:git-${GITHUB_SHA::8}
-      #  uses: docker/build-push-action@v3
-      #  with:
-      #    context: .
-      #    file: ./Dockerfile
-      #    build-args: ${{ matrix.build-args }}
-      #    platforms: linux/amd64,linux/386
-      #    push: true
-      #    target: ${{ matrix.image-name }}
-      #    tags: ${{ steps.tags.outputs.tags }}
-      #    labels: |
-      #      org.opencontainers.image.revision=${{ github.sha }}
-      #      org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
