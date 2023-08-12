@@ -88,8 +88,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64 #,linux/386 #temp disable 386 to verify it doesn't re-build?
-          push: false #true
+          platforms: linux/amd64 #,linux/386 #temp disable 386 to verify it doesn't rebuild?
+          push: true # Try push if it doesn't rebuild.
           tags: ${{ env.DOCKER_TAGS }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
