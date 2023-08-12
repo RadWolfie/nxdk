@@ -36,10 +36,6 @@ jobs:
       - name: Setup DockerHub tags
         if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         run: echo "DOCKER_TAGS=${{ env.DOCKER_TAGS }},${ env.DOCKER_USER_IMAGE}:latest,${{ env.DOCKER_USER_IMAGE }}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: linux/amd64,linux/386
       # required for platforms support
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
