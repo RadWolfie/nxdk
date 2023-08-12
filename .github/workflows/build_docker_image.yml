@@ -51,7 +51,7 @@ jobs:
           #push: false
           # Require image-name here in order to do the test without docker warning about image not found.
           # And to skip local image from push step.
-          tags: ${{ matrix.image-name }} #,${{ env.DOCKER_TAGS }}
+          tags: ${{ matrix.image-name }}:test #,${{ env.DOCKER_TAGS }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ env.timestamp }}
@@ -92,7 +92,7 @@ jobs:
           context: .
           platforms: linux/amd64 #,linux/386 #temp disable 386 to verify it doesn't rebuild?
           #push: true # Try push if it doesn't rebuild, didn't work...
-          tags: ${{ matrix.image-name }} #,${{ env.DOCKER_TAGS }} # NOTE: do not allow image-name here or push will fail!
+          tags: ${{ matrix.image-name }}:pushy #,${{ env.DOCKER_TAGS }} # NOTE: do not allow image-name here or push will fail!
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ env.timestamp }}
