@@ -45,10 +45,10 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/386
+          platforms: linux/amd64
           build-args: ${{ matrix.build-args }}
-          #load: true
-          push: false
+          load: true
+          #push: false
           tags: ${{ env.DOCKER_TAGS }}
       - name: Test Docker image
         run: |
