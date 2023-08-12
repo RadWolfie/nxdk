@@ -50,6 +50,9 @@ jobs:
           load: true
           #push: false
           tags: ${{ env.DOCKER_TAGS }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ env.timestamp }}
       - name: Inspect docker images (after first build)
         run: docker image ls -a --digests
       - name: Test Docker image
