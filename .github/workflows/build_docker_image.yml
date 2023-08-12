@@ -91,3 +91,5 @@ jobs:
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ env.timestamp }}
+      - name: Inspect docker images
+        run: docker image ls -a --digests
