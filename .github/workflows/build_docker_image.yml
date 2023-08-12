@@ -50,6 +50,8 @@ jobs:
           load: true
           #push: false
           tags: ${{ env.DOCKER_TAGS }}
+      - name: Inspect docker images (after first build)
+        run: docker image ls -a --digests
       - name: Test Docker image
         run: |
           cd samples
@@ -61,6 +63,8 @@ jobs:
             docker run --rm -v `pwd`:/usr/src/app -t ${{ matrix.image-name }} make -j`nproc`
             cd ..
           done
+      - name: Inspect docker images (after test run)
+        run: docker image ls -a --digests
       - name: Login to DockerHub
         if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         uses: docker/login-action@v2
@@ -87,5 +91,5 @@ jobs:
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ env.timestamp }}
-      - name: Inspect docker images
+      - name: Inspect docker images (after push)
         run: docker image ls -a --digests
