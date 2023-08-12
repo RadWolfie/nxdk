@@ -85,7 +85,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/386
+          platforms: linux/amd64 #,linux/386 #temp disable 386 to verify it doesn't re-build?
           push: false #true
           tags: ${{ env.DOCKER_TAGS }}
           labels: |
