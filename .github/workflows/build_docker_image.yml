@@ -91,6 +91,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64 #,linux/386 #temp disable 386 to verify it doesn't rebuild?
+          build-args: ${{ matrix.build-args }}
           #push: true # Try push if it doesn't rebuild, didn't work...
           load: true # Pretend and try see if it actually read from docker image to skip the rebuild, if this doesn't work... then
                      # maybe just need a seperate builder? Might be a bug from docker's GH Action... metadata file path do change...
