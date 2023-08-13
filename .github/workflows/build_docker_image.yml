@@ -55,9 +55,6 @@ jobs:
           # Require plain image-name[:tag] here in order to do the test without docker warning about image not found.
           # And to skip local image from push step.
           tags: ${{ matrix.image-name }}
-          #labels: |
-          #  org.opencontainers.image.revision=${{ github.sha }}
-          #  org.opencontainers.image.created=${{ env.timestamp }}
       - name: Test Docker image
         run: |
           cd samples
@@ -89,8 +86,7 @@ jobs:
           context: .
           build-args: ${{ matrix.build-args }}
           platforms: linux/amd64,linux/386
-          # TODO: Uncomment below for production use
-          #push: true
+          push: true
           # NOTE: do not allow plain image-name[:tag] here or push to registry will fail!
           tags: ${{ env.DOCKER_TAGS }}
           labels: |
