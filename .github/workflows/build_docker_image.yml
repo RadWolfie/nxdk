@@ -6,12 +6,14 @@ on:
 jobs:
   main:
     name: Docker
-    #if: github.repository_owner == 'XboxDev'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
+        # TODO: Uncomment everything in matrix below for production use
         #image-name: [nxdk, nxdk-debug, nxdk-lto]
+        # TODO: Remove line below to use above instead in production use
         image-name: [nxdk-debug]
         include:
           #- image-name: nxdk
@@ -25,51 +27,46 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: Setup default environments for docker
+      # Require setup environments for reuse in steps.
+      - name: Setup environments for docker usage
         run: |
           echo "timestamp=$(date --rfc-3339=seconds --utc)" >> $GITHUB_ENV
           DOCKER_USER_IMAGE=$(echo ${{ github.repository_owner }}/${{ matrix.image-name }}|tr '[:upper:]' '[:lower:]')
           echo "DOCKER_USER_IMAGE=${DOCKER_USER_IMAGE}" >> $GITHUB_ENV
-          DOCKER_TAG=ghcr.io/${DOCKER_USER_IMAGE}:latest
-          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
-          echo "DOCKER_TAGS=${DOCKER_TAG},ghcr.io/${DOCKER_USER_IMAGE}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
+          DOCKER_GITHUB_IMAGE=ghcr.io/${DOCKER_USER_IMAGE}
+          echo "DOCKER_TAGS=${DOCKER_GITHUB_IMAGE}:latest,${DOCKER_GITHUB_IMAGE}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
       - name: Setup DockerHub tags
-        if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
+        #TODO: Uncomment below for production use
+        #if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         run: echo "DOCKER_TAGS=${{ env.DOCKER_TAGS }},${ env.DOCKER_USER_IMAGE}:latest,${{ env.DOCKER_USER_IMAGE }}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
-      # required for platforms support
+      # Multi-platforms support will require docker's QEMU action but in our case, x86_64, we don't need it.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      # Do the build only.
-      - name: Build docker image
+      # Do linux/amd64 build only.
+      - name: Build Docker image
         id: build
         uses: docker/build-push-action@v4
         with:
           context: .
+          # Optional but might be recommended if future OS change arch to something else. Which may require docker's QEMU action.
           platforms: linux/amd64
           build-args: ${{ matrix.build-args }}
           load: true
-          #push: false
-          # Require image-name here in order to do the test without docker warning about image not found.
+          # Require plain image-name[:tag] here in order to do the test without docker warning about image not found.
           # And to skip local image from push step.
-          tags: ${{ matrix.image-name }}:test #,${{ env.DOCKER_TAGS }}
-          #labels: |
-          #  org.opencontainers.image.revision=${{ github.sha }}
-          #  org.opencontainers.image.created=${{ env.timestamp }}
-      - name: Inspect docker images (after first build)
-        run: docker image ls -a --digests
-      #- name: Test Docker image
-      #  run: |
-      #    cd samples
-      #    for dir in */
-      #    do
-      #      cd "$dir"
-            # using imageid works.
-            #docker run --rm -v `pwd`:/usr/src/app -t ${{ steps.build.outputs.imageid }} make -j`nproc`
-      #      docker run --rm -v `pwd`:/usr/src/app -t ${{ matrix.image-name }}:test make -j`nproc`
-      #      cd ..
-      #    done
-      - name: Inspect docker images (after test run)
-        run: docker image ls -a --digests
+          tags: ${{ matrix.image-name }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ env.timestamp }}
+      - name: Test Docker image
+        run: |
+          cd samples
+          for dir in */
+          do
+            cd "$dir"
+            docker run --rm -v `pwd`:/usr/src/app -t ${{ matrix.image-name }} make -j`nproc`
+            cd ..
+          done
       - name: Login to DockerHub
         if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         uses: docker/login-action@v2
@@ -90,14 +87,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64 #,linux/386 #temp disable 386 to verify it doesn't rebuild?
+          platforms: linux/amd64,linux/386
           build-args: ${{ matrix.build-args }}
-          #push: true # Try push if it doesn't rebuild, didn't work...
-          load: true # Pretend and try see if it actually read from docker image to skip the rebuild, if this doesn't work... then
-                     # maybe just need a seperate builder? Might be a bug from docker's GH Action... metadata file path do change...
-          tags: ${{ matrix.image-name }}:pushy #,${{ env.DOCKER_TAGS }} # NOTE: do not allow image-name here or push will fail!
-          #labels: |
-          #  org.opencontainers.image.revision=${{ github.sha }}
-          #  org.opencontainers.image.created=${{ env.timestamp }}
-      - name: Inspect docker images (after push)
-        run: docker image ls -a --digests
+          # TODO: Uncomment below for production use
+          #push: true 
+          # NOTE: do not allow plain image-name[:tag] here or push to registery will fail!
+          tags: ${{ env.DOCKER_TAGS }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ env.timestamp }}
