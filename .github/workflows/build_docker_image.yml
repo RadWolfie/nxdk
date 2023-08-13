@@ -36,8 +36,7 @@ jobs:
           DOCKER_GITHUB_IMAGE=ghcr.io/${DOCKER_USER_IMAGE}
           echo "DOCKER_TAGS=${DOCKER_GITHUB_IMAGE}:latest,${DOCKER_GITHUB_IMAGE}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
       - name: Setup DockerHub tags
-        #TODO: Uncomment below for production use
-        #if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
+        if: github.repository_owner == 'XboxDev' && github.ref == 'refs/heads/master'
         run: echo "DOCKER_TAGS=${{ env.DOCKER_TAGS }},${{ env.DOCKER_USER_IMAGE }}:latest,${{ env.DOCKER_USER_IMAGE }}:git-${GITHUB_SHA::8}" >> $GITHUB_ENV
       # Multi-platforms support will require docker's QEMU action but in our case, x86_64, we don't need it.
       - name: Set up Docker Buildx
