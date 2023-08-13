@@ -44,7 +44,7 @@ jobs:
       # Do linux/amd64 build only.
       - name: Build Docker image
         id: build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v3
         with:
           context: .
           build-args: ${{ matrix.build-args }}
@@ -80,14 +80,12 @@ jobs:
       - name: Push docker image
         #TODO: Uncomment below for production use
         #if: github.ref == 'refs/heads/master'
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v3
         with:
           context: .
           build-args: ${{ matrix.build-args }}
           platforms: linux/amd64,linux/386
           push: true
-          # Require not to produce unknown/unknown from GitHub package's OS/Arch page
-          provenance: false
           # NOTE: do not allow plain image-name[:tag] here or push to registry will fail!
           tags: ${{ env.DOCKER_TAGS }}
           labels: |
