@@ -48,16 +48,16 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          build-args: ${{ matrix.build-args }}
           # Optional but might be recommended if future OS change arch to something else. Which may require docker's QEMU action.
           platforms: linux/amd64
-          build-args: ${{ matrix.build-args }}
           load: true
           # Require plain image-name[:tag] here in order to do the test without docker warning about image not found.
           # And to skip local image from push step.
           tags: ${{ matrix.image-name }}
-          labels: |
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ env.timestamp }}
+          #labels: |
+          #  org.opencontainers.image.revision=${{ github.sha }}
+          #  org.opencontainers.image.created=${{ env.timestamp }}
       - name: Test Docker image
         run: |
           cd samples
@@ -87,8 +87,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/386
           build-args: ${{ matrix.build-args }}
+          platforms: linux/amd64,linux/386
           # TODO: Uncomment below for production use
           #push: true
           # NOTE: do not allow plain image-name[:tag] here or push to registry will fail!
