@@ -91,7 +91,7 @@ jobs:
           build-args: ${{ matrix.build-args }}
           # TODO: Uncomment below for production use
           #push: true 
-          # NOTE: do not allow plain image-name[:tag] here or push to registery will fail!
+          # NOTE: do not allow plain image-name[:tag] here or push to registry will fail!
           tags: ${{ env.DOCKER_TAGS }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
