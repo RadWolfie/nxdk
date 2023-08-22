@@ -77,28 +77,27 @@ set(CMAKE_MODULE_PATH "${NXDK_DIR}/share/cmake/Modules")
 set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/nxdk-pkg-config" CACHE STRING "Path to pkg-config")
 
 # Additional toolchain steps required for create xbe and xiso files.
+# TODO: This solution may not be workable with modules. (Recently encounter conflict with "git" by using findpackage function.)
 macro(add_executable)
   # Perform normal call since there's no modification needed except for additional steps require
   _add_executable(${ARGV})
 
-  # If author request generate iso file, then prepare the command here.
-  if(GEN_XISO)
-    set(XISO_OUTPUT "${NXDK_DIR}/tools/extract-xiso/build/extract-xiso" -c "$<TARGET_FILE_DIR:${ARGV0}>/bin" "$<TARGET_FILE_DIR:${ARGV0}>/${GEN_XISO}")
-  endif()
-
-  # If custom title is not given, use given executable name.
-  if(NOT XBE_TITLE)
-    set(XBE_TITLE ${ARGV0})
+  # If custom title is not given, then use given executable name.
+  if(XBE_TITLE)
+    set(_NXDK_XBE_TITLE ${XBE_TITLE})
+  else()
+    set(_NXDK_XBE_TITLE ${ARGV0})
   endif()
 
   # Attach additional toolchain steps to executable project.
   add_custom_command(TARGET ${ARGV0} POST_BUILD
     COMMAND mkdir -p $<TARGET_FILE_DIR:${ARGV0}>/bin
     # Generate xbe binary conversion
-    COMMAND "${NXDK_DIR}/tools/cxbe/cxbe" "-OUT:$<TARGET_FILE_DIR:${ARGV0}>/bin/default.xbe" "-TITLE:${XBE_TITLE}" "$<TARGET_FILE_DIR:${ARGV0}>/${ARGV0}.exe"
-    # Optionally generate xiso file if requested
-    COMMAND "$<$<BOOL:${XISO_OUTPUT}>:$<JOIN:${XISO_OUTPUT},;>>"
+    COMMAND "${NXDK_DIR}/tools/cxbe/cxbe" "-OUT:$<TARGET_FILE_DIR:${ARGV0}>/bin/default.xbe" "-TITLE:${_NXDK_XBE_TITLE}" "$<TARGET_FILE_DIR:${ARGV0}>/${ARGV0}.exe"
     COMMAND_EXPAND_LISTS
     VERBATIM
   )
+  # Clear title variables to prevent re-use from another project.
+  unset(_NXDK_XBE_TITLE)
+  unset(XBE_TITLE)
 endmacro(add_executable)
