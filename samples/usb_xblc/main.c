@@ -82,7 +82,6 @@ int main(void)
 
     usbh_core_init();
     usbh_xblc_init();
-    usbh_xid_init();
     usbh_install_xblc_conn_callback(connection_callback, disconnection_callback);
     SDL_Init(SDL_INIT_GAMECONTROLLER);
     SDL_Event e;
