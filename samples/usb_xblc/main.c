@@ -11,9 +11,9 @@
 */
 
 //Make a circular FIFO buffer to audio input/output loopback
-#define RECORD_BUFF_SUZE 384 //Enough for 8 USB frames at 24kHz mono (24000*2/1000*8)
+#define RECORD_BUFF_SIZE 384 //Enough for 8 USB frames at 24kHz mono (24000*2/1000*8)
 typedef struct {
-    short recorded_data[RECORD_BUFF_SUZE];
+    short recorded_data[RECORD_BUFF_SIZE];
     int record_pos;
     int playback_pos;
     char got_first_packet;
@@ -42,7 +42,7 @@ static int audio_in_cb(xblc_dev_t *xblc_dev, int16_t *rxdata, int num_samples)
     int i = 0;
     while (num_samples--) {
         loop->recorded_data[loop->record_pos] = rxdata[i++];
-        loop->record_pos = (loop->record_pos + 1) % RECORD_BUFF_SUZE;
+        loop->record_pos = (loop->record_pos + 1) % RECORD_BUFF_SIZE;
     }
     loop->got_first_packet = 1;
     return i;
@@ -61,7 +61,7 @@ static int audio_out_cb(xblc_dev_t *xblc_dev, int16_t *txdata, int num_samples)
     int i = 0;
     while (num_samples--) {
         txdata[i++] = loop->recorded_data[loop->playback_pos];
-        loop->playback_pos = (loop->playback_pos + 1) % RECORD_BUFF_SUZE;
+        loop->playback_pos = (loop->playback_pos + 1) % RECORD_BUFF_SIZE;
     }
     return i;
 }
