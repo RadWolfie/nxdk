@@ -19,12 +19,20 @@ typedef struct {
     char got_first_packet;
 } loopback_t;
 
-static const char* rates[XBLC_RATE_MAX_NUM] = {
+static const char* sample_rates_str[XBLC_RATE_MAX_NUM] = {
     "8000",
     "11025",
     "16000",
     "22050",
     "24000"
+};
+
+static const int sample_rates_hz[XBLC_RATE_MAX_NUM] = {
+    8000,
+    11025,
+    16000,
+    22050,
+    24000
 };
 
 //Audio received from the microphone. There is num_samples in rxdata
@@ -77,7 +85,7 @@ static void disconnection_callback(xblc_dev_t *xblc_dev, int status) {
 
 int main(void)
 {
-    int sample_rate = XBLC_RATE_24000;
+    int sample_rate_index = XBLC_RATE_24000;
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
     usbh_core_init();
@@ -99,26 +107,28 @@ int main(void)
                 break;
             case SDL_CONTROLLERBUTTONDOWN:
                 if (e.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) {
-                    if (sample_rate < XBLC_RATE_MAX_NUM - 1) {
-                        sample_rate++;
+                    if (sample_rate_index < XBLC_RATE_MAX_NUM - 1) {
+                        sample_rate_index++;
                     }
                 }
                 if (e.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) {
-                    if (sample_rate > 0) {
-                        sample_rate--;
+                    if (sample_rate_index > 0) {
+                        sample_rate_index--;
                     }
                 }
             }
         }
 
+        SDL_GameControllerUpdate();
         //Update the sample rate for all devices if required.
         xblc_dev_t *xblc_dev = usbh_xblc_get_device_list();
         while (xblc_dev != NULL) {
-            if (usbh_xblc_get_sample_rate(xblc_dev) != sample_rate) {
-                usbh_xblc_set_sample_rate(xblc_dev, sample_rate);
-                debugPrint("Xbox Live Communicator #%d sample rate set to %s Hz\n", usbh_xblc_get_port(xblc_dev), rates[sample_rate]);
+            int sample_rate_hz_before = usbh_xblc_get_sample_rate(xblc_dev);
+            if (sample_rate_hz_before != sample_rates_hz[sample_rate_index]) {
+                usbh_xblc_set_sample_rate(xblc_dev, sample_rate_index);
+                debugPrint("Xbox Live Communicator #%d sample rate is set to %s Hz\n", usbh_xblc_get_port(xblc_dev), sample_rates_str[sample_rate_index]);
             }
-            xblc_dev = usbh_xblc_get_device_list();
+            xblc_dev = xblc_dev->next;
         }
     }
     //Never reached, but shown for clarity
