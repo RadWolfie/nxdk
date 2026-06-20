@@ -380,7 +380,9 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                    (characteristics & IMAGE_SCN_CNT_CODE))
                     m_SectionHeader[v].dwFlags.bExecutable = true;
 
-                m_SectionHeader[v].dwFlags.bPreload = true;
+                if((characteristics & IMAGE_SCN_MEM_DISCARDABLE) == 0)
+                    m_SectionHeader[v].dwFlags.bPreload = true;
+
                 m_SectionHeader[v].dwVirtualAddr =
                     x_Exe->m_SectionHeader[v].m_virtual_addr + m_Header.dwPeBaseAddr;
 
